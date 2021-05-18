@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
     year: schemaOptions,
     phone: schemaOptions,
     whatsappPhone: schemaOptions,
-    clubs: [],
+    clubs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Club" }],
   },
   { timestamps: true }
 );
