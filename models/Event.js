@@ -11,7 +11,7 @@ const eventSchema = new mongoose.Schema({
   description: schemaOptions,
   imageUrl: schemaOptions,
   meetUrl: schemaOptions,
-  dateTime: { ...schemaOptions, type: Date },
+  dateTime: { ...schemaOptions, type: Date, default: Date.now() },
 });
 
 export default mongoose.model("Event", eventSchema);
