@@ -6,6 +6,7 @@ import connectDB, { upload, gfs } from "./config/db.js";
 import userRouter from "./routes/user.js";
 import clubRouter from "./routes/club.js";
 import eventRouter from "./routes/event.js";
+import feedRouter from "./routes/feed.js";
 
 // configurations
 dotenv.config({ path: "./config/config.env" });
@@ -24,6 +25,7 @@ app.get("/", (req, res) => res.status(200).send("Welcome to Club API"));
 app.use("/api", userRouter);
 app.use("/api", clubRouter);
 app.use("/api", eventRouter);
+app.use("/api", feedRouter);
 
 app.post("/api/upload/image", upload.single("file"), (req, res) =>
   res.status(201).json(req.file)

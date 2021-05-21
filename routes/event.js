@@ -45,7 +45,7 @@ router.patch("/event/update/:eventId", verifyToken, async (req, res) => {
 router.delete("/event/delete/:eventId", verifyToken, async (req, res) => {
   try {
     if (req.user.userType !== "admin")
-      return res.status(401).json("Only Admins are allowed ");
+      return res.status(401).json("Only Admins are allowed!");
     const deletedEvent = await Event.findOneAndDelete({
       _id: req.params.eventId,
     });

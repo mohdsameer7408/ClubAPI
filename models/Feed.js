@@ -10,7 +10,7 @@ const feedSchema = new mongoose.Schema(
     clubId: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
     text: schemaOptions,
     imageUrl: String,
-    userId: { type: mongoose.Schema.Types.objectId, ref: "User" },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
 );
