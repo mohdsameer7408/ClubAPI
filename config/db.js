@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import GridFsStorage from "multer-gridfs-storage";
 import multer from "multer";
 import path from "path";
+import Pusher from "pusher";
 
 let gfs, upload;
 
@@ -13,6 +14,15 @@ const connectDB = async () => {
     useUnifiedTopology: true,
     useFindAndModify: false,
   };
+
+  // pusher configurations
+  const pusher = new Pusher({
+    appId: "1209511",
+    key: "85e6b2da89ec8c32f889",
+    secret: "95f4b738ac442b91f432",
+    cluster: "ap2",
+    useTLS: true,
+  });
 
   try {
     // db connection
@@ -44,6 +54,67 @@ const connectDB = async () => {
     });
 
     upload = multer({ storage });
+
+    // making mongoDB realtime
+    const clubsChangeStream = mongoose.connection.collection("clubs").watch();
+    clubsChangeStream.on("change", (change) => {
+      console.log("Change stream triggered!");
+      console.log(change);
+
+      if (change.operationType === "insert") {
+        const data = change.fullDocument;
+        console.log("A Club was Created!");
+        pusher.trigger("clubs", "inserted", data);
+      } else if (
+        change.operationType === "update" ||
+        change.operationType === "delete"
+      ) {
+        console.log("A Club was Updated or Deleted!");
+        pusher.trigger("clubs", "inserted", {});
+      } else {
+        console.log("A Strange operation was triggered!");
+      }
+    });
+
+    const eventsChangeStream = mongoose.connection.collection("events").watch();
+    eventsChangeStream.on("change", (change) => {
+      console.log("Change stream triggered!");
+      console.log(change);
+
+      if (change.operationType === "insert") {
+        const data = change.fullDocument;
+        console.log("An event was created!");
+        pusher.trigger("events", "inserted", data);
+      } else if (
+        change.operationType === "update" ||
+        change.operationType === "delete"
+      ) {
+        console.log("An event was updated or deleted!");
+        pusher.trigger("events", "inserted", {});
+      } else {
+        console.log("A strange operation was triggered!");
+      }
+    });
+
+    const feedsChangeStream = mongoose.connection.collection("feeds").watch();
+    feedsChangeStream.on("change", (change) => {
+      console.log("Change stream triggered!");
+      console.log(change);
+
+      if (change.operationType === "insert") {
+        const data = change.fullDocument;
+        console.log("A Post was Created!");
+        pusher.trigger("feeds", "inserted", data);
+      } else if (
+        change.operationType === "update" ||
+        change.operationType === "delete"
+      ) {
+        console.log("A Post was Updated or Deleted!");
+        pusher.trigger("feeds", "inserted", {});
+      } else {
+        console.log("A Strange operation was triggered!");
+      }
+    });
   } catch (error) {
     console.log(`An error occured while connecting to mongoDB: ${error}`);
   }
