@@ -24,6 +24,7 @@ router.post("/register", async (req, res) => {
       ...req.body,
       userType: "user",
       password: hashedPassword,
+      clubs: [],
     });
 
     const createdUser = await user.save();
