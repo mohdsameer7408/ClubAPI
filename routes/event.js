@@ -7,7 +7,10 @@ const router = Router();
 
 router.get("/events", async (req, res) => {
   try {
-    const events = await Event.find().populate("clubId");
+    const events = await Event.find().populate(
+      "clubId participants",
+      "-password -__v -createdAt -updatedAt"
+    );
     res.status(200).json(events);
   } catch (error) {
     res.status(500).json(`Something went wrong an error occured ${error}`);
@@ -54,5 +57,22 @@ router.delete("/event/delete/:eventId", verifyToken, async (req, res) => {
     res.status(500).json(`Something went wrong and an error occured: ${error}`);
   }
 });
+
+router.patch(
+  "/event/addParticipant/:eventId",
+  verifyToken,
+  async (req, res) => {
+    try {
+      const event = await Event.findById(req.params.eventId);
+      event.participants = [...event.participants, req.user._id];
+      const updatedEvent = await event.save();
+      res.status(200).json(updatedEvent);
+    } catch (error) {
+      res
+        .status(500)
+        .json(`Something went wrong and an error occured: ${error}`);
+    }
+  }
+);
 
 export default router;

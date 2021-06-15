@@ -12,6 +12,7 @@ const eventSchema = new mongoose.Schema({
   imageUrl: schemaOptions,
   meetUrl: schemaOptions,
   dateTime: { ...schemaOptions, type: Date, default: Date.now() },
+  participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 });
 
 export default mongoose.model("Event", eventSchema);
