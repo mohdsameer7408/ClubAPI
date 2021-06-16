@@ -135,6 +135,25 @@ router.patch("/password/update", verifyToken, async (req, res) => {
   }
 });
 
+router.get("/user/autoLogin", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      course: user.course,
+      year: user.year,
+      phone: user.phone,
+      whatsappPhone: user.whatsappPhone,
+      clubs: user.clubs,
+      token: req.header("auth-token"),
+    });
+  } catch (error) {
+    res.status(500).json(`Something went wrong and an error occured: ${error}`);
+  }
+});
+
 const generateHashedPassword = async (password) => {
   try {
     const salt = await bcrypt.genSalt(10);
