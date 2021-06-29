@@ -24,6 +24,12 @@ router.post("/club/create", verifyToken, async (req, res) => {
           "A club with this name already exists try with a different name!"
         );
 
+    const isUserAdminOfAClub = await Club.findOne({ admin: req.user._id });
+    if (isUserAdminOfAClub)
+      return res
+        .status(400)
+        .json("Your account is already associated to a club");
+
     const club = new Club({ ...req.body, admin: req.user._id });
     const createdClub = await club.save();
     res.status(201).json(createdClub);
