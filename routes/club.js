@@ -16,6 +16,11 @@ router.get("/clubs", async (req, res) => {
 
 router.post("/club/create", verifyToken, async (req, res) => {
   try {
+    if (req.user.userType !== "admin")
+      return res
+        .status(400)
+        .json("Only admins allowed to perform this action!");
+
     const doesClubExists = await Club.findOne({ name: req.body.name });
     if (doesClubExists)
       return res
@@ -41,6 +46,11 @@ router.post("/club/create", verifyToken, async (req, res) => {
 router.patch("/club/update/:clubId", verifyToken, async (req, res) => {
   const { clubId } = req.params;
   try {
+    if (req.user.userType !== "admin")
+      return res
+        .status(400)
+        .json("Only admins allowed to perform this action!");
+
     const club = await Club.findOneAndUpdate({ _id: clubId }, req.body, {
       new: true,
       useFindAndModify: false,
@@ -53,6 +63,11 @@ router.patch("/club/update/:clubId", verifyToken, async (req, res) => {
 
 router.delete("/club/delete/:clubId", verifyToken, async (req, res) => {
   try {
+    if (req.user.userType !== "admin")
+      return res
+        .status(400)
+        .json("Only admins allowed to perform this action!");
+
     const deletedClub = await Club.findOneAndDelete({ _id: req.params.clubId });
     res.status(200).json(deletedClub);
   } catch (error) {
