@@ -159,6 +159,36 @@ router.get("/user/autoLogin", verifyToken, async (req, res) => {
   }
 });
 
+router.patch("/user/registerToClub/:clubId", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    user.clubs = [...user.clubs, req.params.clubId];
+    const updatedUser = await user.save();
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json(`Something went wrong and an error occured: ${error}`);
+  }
+});
+
+router.patch(
+  "/user/unRegisterFromClub/:clubId",
+  verifyToken,
+  async (req, res) => {
+    try {
+      const user = await User.findById(req.user._id);
+      user.clubs = user.clubs.filter(
+        (club) => club._id.toString() !== req.params.clubId
+      );
+      const updatedUser = await user.save();
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      res
+        .status(500)
+        .json(`Something went wrong and an error occured: ${error}`);
+    }
+  }
+);
+
 const generateHashedPassword = async (password) => {
   try {
     const salt = await bcrypt.genSalt(10);

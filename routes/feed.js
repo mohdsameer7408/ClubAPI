@@ -7,7 +7,10 @@ const router = Router();
 
 router.get("/feeds", async (req, res) => {
   try {
-    const feeds = await Feed.find({ clubId: req.query.clubId });
+    const feeds = await Feed.find({ clubId: req.query.clubId }).populate(
+      "userId",
+      "-password -__v -createdAt -updatedAt"
+    );
     res.status(200).json(feeds);
   } catch (error) {
     res.status(501).json(`Something went wrong an error occured ${error}`);
@@ -16,10 +19,7 @@ router.get("/feeds", async (req, res) => {
 
 router.post("/feed/create", verifyToken, async (req, res) => {
   try {
-    if (req.user.userType != "admin")
-      return res.status(401).json(`Only Admins are allowed`);
-
-    const feed = new Feed({ ...req.body, userId: req.user.userId });
+    const feed = new Feed({ ...req.body, userId: req.user._id });
     const createdFeed = await feed.save();
     res.status(201).json(createdFeed);
   } catch (error) {

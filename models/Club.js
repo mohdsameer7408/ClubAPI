@@ -18,7 +18,7 @@ const clubSchema = new mongoose.Schema(
       gmail: schemaOptions,
     },
     members: [
-      { userName: schemaOptions, title: schemaOptions, image: schemaOptions },
+      { name: schemaOptions, title: schemaOptions, imageUrl: schemaOptions },
     ],
     admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },

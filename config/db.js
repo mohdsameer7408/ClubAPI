@@ -130,7 +130,7 @@ const connectDB = async () => {
         change.operationType === "delete"
       ) {
         console.log("A User was Updated or Deleted!");
-        pusher.trigger("user", "inserted", change.documentKey);
+        pusher.trigger("user", "updated", change.documentKey);
       } else {
         console.log("A Strange operation was triggered!");
       }
